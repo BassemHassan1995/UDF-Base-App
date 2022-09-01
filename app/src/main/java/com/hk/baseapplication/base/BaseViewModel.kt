@@ -1,4 +1,4 @@
 package com.hk.baseapplication.base
 
-open class BaseViewModel {
+abstract class BaseViewModel  {
 }
