@@ -6,30 +6,19 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<UiAction : BaseUiAction, UiState : BaseUiState> : ViewModel() {
+abstract class BaseViewModel<UiAction: BaseUiAction, UiState: BaseUiState> : ViewModel() {
 
-    private val _actionFlow = MutableSharedFlow<UiAction>()
+    protected abstract val uiState: MutableStateFlow<UiState>
 
-    internal abstract val _state: MutableStateFlow<UiState>
-
-    val state: StateFlow<UiState>
-        get() = _state.asStateFlow()
+    val state: StateFlow<UiState> by lazy { uiState }
 
     private var job: Job? = null
-
-    init {
-        _actionFlow.process().launchIn(viewModelScope)
-    }
 
     protected fun doJob(function: () -> Int) {
         job?.cancel()
         job = viewModelScope.launch { function() }
     }
 
-    protected abstract fun Flow<UiAction>.process(): Flow<UiAction>
-
-    fun processAction(action: UiAction): Boolean {
-        return _actionFlow.tryEmit(action)
-    }
+    abstract fun processAction(uiAction: UiAction)
 
 }
