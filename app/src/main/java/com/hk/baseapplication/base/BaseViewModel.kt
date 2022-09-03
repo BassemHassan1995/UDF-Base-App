@@ -14,7 +14,7 @@ abstract class BaseViewModel<UiAction: BaseUiAction, UiState: BaseUiState> : Vie
 
     private var job: Job? = null
 
-    protected fun doJob(function: () -> Int) {
+    protected fun doJob(function: suspend () -> Unit) {
         job?.cancel()
         job = viewModelScope.launch { function() }
     }

@@ -3,10 +3,8 @@ package com.hk.baseapplication.ui.splash
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.hk.baseapplication.base.BaseFragment
 import com.hk.baseapplication.databinding.FragmentSplashBinding
-import kotlinx.coroutines.launch
 
 class SplashFragment : BaseFragment<FragmentSplashBinding, SplashAction, SplashState>() {
 
@@ -19,15 +17,11 @@ class SplashFragment : BaseFragment<FragmentSplashBinding, SplashAction, SplashS
 
     override fun setupViews() {
         binding.btnDecrement.setOnClickListener {
-            lifecycleScope.launch {
-                actionChannel.send(SplashAction.DecrementCounterAction)
-            }
+            performAction(SplashAction.DecrementCounterAction)
         }
 
         binding.btnIncrement.setOnClickListener {
-            lifecycleScope.launch {
-                actionChannel.send(SplashAction.IncrementCounterAction)
-            }
+            performAction(SplashAction.IncrementCounterAction)
         }
     }
 

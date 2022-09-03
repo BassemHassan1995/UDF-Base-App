@@ -21,7 +21,7 @@ abstract class BaseFragment<Binding : ViewBinding, UiAction : BaseUiAction, UiSt
 
     protected abstract val viewModel: BaseViewModel<UiAction, UiState>
 
-    protected val actionChannel: Channel<UiAction> = Channel()
+    private val actionChannel: Channel<UiAction> = Channel()
 
     private fun actions(): Flow<UiAction> = actionChannel.consumeAsFlow()
 
@@ -61,5 +61,11 @@ abstract class BaseFragment<Binding : ViewBinding, UiAction : BaseUiAction, UiSt
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    protected fun performAction(action: UiAction) {
+        lifecycleScope.launch {
+            actionChannel.send(action)
+        }
     }
 }
