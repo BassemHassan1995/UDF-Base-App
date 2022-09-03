@@ -10,7 +10,7 @@ abstract class BaseViewModel<UiAction: BaseUiAction, UiState: BaseUiState> : Vie
 
     protected abstract val uiState: MutableStateFlow<UiState>
 
-    val state: StateFlow<UiState> by lazy { uiState }
+    internal val state: StateFlow<UiState> by lazy { uiState }
 
     private var job: Job? = null
 

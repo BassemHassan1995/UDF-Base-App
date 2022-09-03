@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 abstract class BaseFragment<Binding : ViewBinding, UiAction : BaseUiAction, UiState : BaseUiState> :
     Fragment() {
@@ -34,6 +37,14 @@ abstract class BaseFragment<Binding : ViewBinding, UiAction : BaseUiAction, UiSt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actions().onEach(viewModel::processAction).launchIn(lifecycleScope)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect {
+                    it.handleUiState()
+                }
+            }
+        }
     }
 
     override fun onCreateView(
